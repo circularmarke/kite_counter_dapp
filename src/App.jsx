@@ -59,6 +59,11 @@ function App() {
     } catch (err) {
       if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
         setError("Transaction request was canceled in your wallet.");
+      } else if (
+        err?.code === "INSUFFICIENT_FUNDS" ||
+        err?.message?.includes("insufficient funds")
+      ) {
+        setError("Insufficient KITE for gas. Please claim tokens from the testnet faucet.");
       } else {
         setError(err?.message || "Increment transaction failed.");
       }
@@ -76,6 +81,11 @@ function App() {
     } catch (err) {
       if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
         setError("Transaction request was canceled in your wallet.");
+      } else if (
+        err?.code === "INSUFFICIENT_FUNDS" ||
+        err?.message?.includes("insufficient funds")
+      ) {
+        setError("Insufficient KITE for gas. Please claim tokens from the testnet faucet.");
       } else {
         setError(err?.message || "Decrement transaction failed.");
       }

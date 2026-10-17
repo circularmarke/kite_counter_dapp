@@ -50,18 +50,36 @@ function App() {
 
   const increment = async () => {
     if (!contract) return;
-    const tx = await contract.increment();
-    await tx.wait();
-    const updatedCount = await contract.getCount();
-    setCount(updatedCount.toString());
+    try {
+      const tx = await contract.increment();
+      await tx.wait();
+      const updatedCount = await contract.getCount();
+      setCount(updatedCount.toString());
+      setError("");
+    } catch (err) {
+      if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
+        setError("Transaction request was canceled in your wallet.");
+      } else {
+        setError(err?.message || "Increment transaction failed.");
+      }
+    }
   };
 
   const decrement = async () => {
     if (!contract) return;
-    const tx = await contract.decrement();
-    await tx.wait();
-    const updatedCount = await contract.getCount();
-    setCount(updatedCount.toString());
+    try {
+      const tx = await contract.decrement();
+      await tx.wait();
+      const updatedCount = await contract.getCount();
+      setCount(updatedCount.toString());
+      setError("");
+    } catch (err) {
+      if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
+        setError("Transaction request was canceled in your wallet.");
+      } else {
+        setError(err?.message || "Decrement transaction failed.");
+      }
+    }
   };
 
   return (

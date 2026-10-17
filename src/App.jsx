@@ -48,6 +48,19 @@ function App() {
     }
   };
 
+function parseContractError(err, action = "Transaction") {
+  if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
+    return "Transaction request was canceled in your wallet.";
+  }
+  if (
+    err?.code === "INSUFFICIENT_FUNDS" ||
+    err?.message?.includes("insufficient funds")
+  ) {
+    return "Insufficient KITE for gas. Please claim tokens from the testnet faucet.";
+  }
+  return err?.shortMessage || err?.message || `${action} failed.`;
+}
+
   const increment = async () => {
     if (!contract) return;
     try {
@@ -57,16 +70,7 @@ function App() {
       setCount(updatedCount.toString());
       setError("");
     } catch (err) {
-      if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
-        setError("Transaction request was canceled in your wallet.");
-      } else if (
-        err?.code === "INSUFFICIENT_FUNDS" ||
-        err?.message?.includes("insufficient funds")
-      ) {
-        setError("Insufficient KITE for gas. Please claim tokens from the testnet faucet.");
-      } else {
-        setError(err?.message || "Increment transaction failed.");
-      }
+      setError(parseContractError(err, "Increment transaction"));
     }
   };
 
@@ -79,16 +83,7 @@ function App() {
       setCount(updatedCount.toString());
       setError("");
     } catch (err) {
-      if (err?.code === 4001 || err?.code === "ACTION_REJECTED") {
-        setError("Transaction request was canceled in your wallet.");
-      } else if (
-        err?.code === "INSUFFICIENT_FUNDS" ||
-        err?.message?.includes("insufficient funds")
-      ) {
-        setError("Insufficient KITE for gas. Please claim tokens from the testnet faucet.");
-      } else {
-        setError(err?.message || "Decrement transaction failed.");
-      }
+      setError(parseContractError(err, "Decrement transaction"));
     }
   };
 

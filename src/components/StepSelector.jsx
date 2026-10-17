@@ -1,22 +1,25 @@
 import PropTypes from "prop-types";
 
-function StepSelector({ step, onSelectStep }) {
+function StepSelector({ step, onSelectStep, disabled }) {
   const options = [1, 5, 10];
 
   return (
-    <div className="flex items-center justify-center gap-2 mb-4">
-      <span className="text-xs text-gray-500 font-medium">Step:</span>
-      <div className="inline-flex rounded-md shadow-sm" role="group">
+    <div className="flex items-center justify-between px-4 py-2 bg-gray-50/80 rounded-lg border border-gray-100 mb-3">
+      <span className="text-xs text-gray-500 font-medium tracking-wide">
+        Step Multiplier
+      </span>
+      <div className="inline-flex p-0.5 bg-gray-200/60 rounded-md" role="group">
         {options.map((opt) => (
           <button
             key={opt}
             type="button"
+            disabled={disabled}
             onClick={() => onSelectStep(opt)}
-            className={`px-3 py-1 text-xs font-medium border ${
+            className={`px-2.5 py-1 text-xs font-semibold rounded transition-all duration-150 cursor-pointer ${
               step === opt
-                ? "bg-indigo-600 text-white border-indigo-600 z-10"
-                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-            } rounded-md mx-0.5 cursor-pointer`}
+                ? "bg-white text-indigo-600 shadow-sm"
+                : "text-gray-600 hover:text-gray-900"
+            } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             ±{opt}
           </button>
@@ -29,6 +32,7 @@ function StepSelector({ step, onSelectStep }) {
 StepSelector.propTypes = {
   step: PropTypes.number.isRequired,
   onSelectStep: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default StepSelector;

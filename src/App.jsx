@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import StepSelector from "./components/StepSelector";
 import CONTRACT_ABI from "../abis/Counter.json";
 import "./index.css";
 
@@ -15,6 +16,8 @@ function App() {
   const [contract, setContract] = useState(null);
   const [wallet, setWallet] = useState(null);
   const [error, setError] = useState("");
+  const [step, setStep] = useState(1);
+  const [isPending, setIsPending] = useState(false);
 
   const connectWallet = async () => {
     if (!window.ethereum) {
@@ -112,25 +115,34 @@ function parseContractError(err, action = "Transaction") {
             Connect Wallet
           </button>
         ) : (
-          <div className="bg-white shadow-lg rounded-lg  w-80 text-center mt-32">
-            <h2 className="text-2xl font-bold mb-0 border-gray-100 border-b pb-3 pt-3">
+          <div className="bg-white shadow-lg rounded-lg w-80 text-center mt-32 p-4">
+            <h2 className="text-2xl font-bold mb-3 border-gray-100 border-b pb-3">
               Counter
             </h2>
-            <p className="text-7xl font-bold text-gray-800 mb-0 pb-10 pt-10 mb-5 mt-5">
+            <p className="text-7xl font-bold text-gray-800 mb-4 py-6">
               {count !== null ? count : "Loading..."}
             </p>
-            <div className="flex justify-between gap-3 border-gray-100 border-t p-4">
+
+            <StepSelector
+              step={step}
+              onSelectStep={setStep}
+              disabled={isPending}
+            />
+
+            <div className="flex justify-between gap-3 border-gray-100 border-t pt-4">
               <button
-                onClick={increment}
-                className="btn-primary cursor-pointer"
+                onClick={() => executeAction(true)}
+                disabled={isPending}
+                className="btn-primary cursor-pointer flex-1 disabled:opacity-50"
               >
-                Increment
+                {isPending ? "Executing..." : `Increment (+${step})`}
               </button>
               <button
-                onClick={decrement}
-                className="btn-primary cursor-pointer"
+                onClick={() => executeAction(false)}
+                disabled={isPending}
+                className="btn-primary cursor-pointer flex-1 disabled:opacity-50"
               >
-                Decrement
+                {isPending ? "Executing..." : `Decrement (-${step})`}
               </button>
             </div>
           </div>
